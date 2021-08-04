@@ -10,7 +10,6 @@ operators = {
     '^': pow
 }
 
-
 list_of_variables = ["T[K]", "p[bar]", "V[m^3]"]
 list_of_transitions = ["isobar", "isotherm", "isochor", "adiabat"]
 list_of_constants = ["Molar Mass [g/mol]", "n [mol]", "Mass [g]", u'R\u209B', u'R\u2098', u'\u03BA', u'c\u209A',
@@ -19,13 +18,13 @@ dictionary_of_constants = dict()
 
 
 def interpret_as_num(plain: str):
-    if plain.isdigit():
+    try:
         return float(plain)
-    for c in operators.keys():
-        left, operator, right = plain.partition(c)
-        if operator in operators:
-            return operators[operator](interpret_as_num(left), interpret_as_num(right))
-
+    except:
+        for c in operators.keys():
+            left, operator, right = plain.partition(c)
+            if operator in operators:
+                return operators[operator](interpret_as_num(left), interpret_as_num(right))
 
 
 def inputListForOneState(frame: tk.Frame, state: int):
@@ -57,7 +56,7 @@ def calculateConstants(event=None):
         mu = interpret_as_num(dictionary_of_constants[list_of_constants[2]].get().replace(',', '.'))
         if dictionary_of_constants[list_of_constants[0]].get() != "":
             m = interpret_as_num(dictionary_of_constants[list_of_constants[0]].get().replace(',', '.'))
-            dictionary_of_constants[list_of_constants[1]].set(str(mu/m))
+            dictionary_of_constants[list_of_constants[1]].set(str(mu / m))
         elif dictionary_of_constants[list_of_constants[1]].get() != "":
             n = interpret_as_num(dictionary_of_constants[list_of_constants[1]].get().replace(',', '.'))
             dictionary_of_constants[list_of_constants[0]].set(str(mu / n))
@@ -114,21 +113,21 @@ def createConstantsTab(frame: tk.Frame):
         tk.Label(fr_mol, text=list_of_constants[i]).grid(row=i, column=0)
         entry = tk.Entry(fr_mol, textvariable=dictionary_of_constants[list_of_constants[i]])
         entry.grid(row=i, column=1)
-        entry.bind('<Return>', calculateConstants, add='-')
+        entry.bind('<Return>', calculateConstants)
     fr_mol.grid(row=0, column=0, padx=4, pady=4)
     fr_r = tk.LabelFrame(fr_inputs, text="Gas Constants", bg='#32a852')
     for i in range(3, 5):
-        tk.Label(fr_r, text=list_of_constants[i]).grid(row=i-2, column=0)
+        tk.Label(fr_r, text=list_of_constants[i]).grid(row=i - 2, column=0)
         entry = tk.Entry(fr_r, textvariable=dictionary_of_constants[list_of_constants[i]])
-        entry.grid(row=i-2, column=1)
-        entry.bind('<Return>', calculateConstants, add='-')
+        entry.grid(row=i - 2, column=1)
+        entry.bind('<Return>', calculateConstants)
     fr_r.grid(row=0, column=1, padx=4, pady=4)
     fr_c = tk.LabelFrame(fr_inputs, text="Thermal Capacity", bg='#eb856e')
     for i in range(5, 8):
         tk.Label(fr_c, text=list_of_constants[i]).grid(row=i - 5, column=0)
         entry = tk.Entry(fr_c, textvariable=dictionary_of_constants[list_of_constants[i]])
         entry.grid(row=i - 5, column=1)
-        entry.bind('<Return>', calculateConstants, add='-')
+        entry.bind('<Return>', calculateConstants)
     fr_c.grid(row=0, column=2, padx=4, pady=4)
     fr_inputs.pack()
 
